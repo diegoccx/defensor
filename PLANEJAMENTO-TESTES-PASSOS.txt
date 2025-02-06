@@ -1,0 +1,396 @@
+Plano de Testes para os Formulários
+Objetivo
+Garantir que o comportamento esperado dos formulários "Novo Cliente" e "Contas e Operações" funcione adequadamente, abordando cenários funcionais, de validação, e regressão.
+
+1. Cenários de Teste para o Formulário "Novo Cliente"
+ID	Descrição	Ações	Resultado Esperado
+TC01	Validação do campo "Nome" obrigatório	- Deixe o campo vazio
+- Saia do campo
+- Tente enviar o formulário	Mensagem "Nome é obrigatório" deve ser exibida e o botão "Salvar" deve estar desabilitado.
+TC02	Validação do campo "Email" obrigatório e válido	- Insira um valor inválido, como abc
+- Saia do campo	Mensagem "Email é obrigatório" deve ser exibida se inválido; o botão "Salvar" permanece desabilitado.
+TC03	Inserção válida	- Preencha "Nome" e "Email" corretamente
+- Clique no botão "Salvar"	O formulário deve ser enviado com sucesso, e os dados devem aparecer no backend/serviço.
+TC04	Verificação de reset após submissão	- Preencha o formulário
+- Submeta
+- Verifique se os campos foram limpos	Campos do formulário devem ser resetados após o envio bem-sucedido.
+2. Cenários de Teste para o Formulário "Contas e Operações"
+Formulário de Busca de Conta
+ID	Descrição	Ações	Resultado Esperado
+TC05	Busca por conta existente	- Insira um número de conta válido
+- Clique no botão "Buscar"	Detalhes da conta devem ser exibidos na interface, incluindo saldo e operações.
+TC06	Busca por conta inexistente	- Insira um número de conta inválido ou inexistente
+- Clique em "Buscar"	Deve exibir mensagem de erro: "Conta não encontrada".
+TC07	Erro de conexão (simulado)	- Simule um erro no backend
+- Clique em "Buscar"	Mensagem "Erro de conexão" ou similar deve ser exibida.
+Formulário de Operações
+ID	Descrição	Ações	Resultado Esperado
+TC08	Realização de débito	- Selecione "Débito"
+- Insira valores válidos para "Valor" e "Descrição"
+- Clique em "Salvar Operação"	O saldo da conta deve diminuir pelo valor especificado; nova operação listada.
+TC09	Realização de crédito	- Selecione "Crédito"
+- Insira valores válidos para "Valor" e "Descrição"
+- Clique em "Salvar Operação"	O saldo da conta deve aumentar pelo valor especificado; nova operação listada.
+TC10	Transferência entre contas	- Selecione "Transferência"
+- Insira valores válidos para "Valor", "Conta de Destino" e "Descrição"
+- Clique em "Salvar Operação"	Saldo da conta origem deve reduzir; saldo da conta destino deve aumentar.
+TC11	Validação de campo obrigatório no formulário de operações	- Deixe "Valor" ou "Descrição" vazio
+- Tente salvar	Mensagem de erro apropriada deve ser exibida, botão "Salvar" deve permanecer desabilitado.
+TC12	Operação com saldo insuficiente	- Realize uma operação de "Débito" com valor maior que o saldo atual	Mensagem de erro "Saldo insuficiente" deve ser exibida.
+3. Testes Regressivos
+Cenários Focados
+Persistência de Dados: Após criar ou alterar um cliente ou operação, os dados devem ser mantidos no backend.
+Validação de Botões:
+Botões desabilitados quando validações falham.
+Botões habilitados somente quando todas as condições forem atendidas.
+Paginação:
+A navegação entre páginas de operações deve funcionar sem erros.
+Os dados exibidos devem refletir as operações reais da conta.
+4. Testes Automatizados com Jasmine/Karma
+4.1. Configurar o Ambiente
+Certifique-se de que o Angular CLI já está configurado no projeto. Execute:
+
+bash
+Copiar
+Editar
+ng add @angular-eslint/schematics
+4.2. Exemplo de Testes Unitários
+Teste de Validação no Formulário de Novo Cliente:
+typescript
+Copiar
+Editar
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
+
+@Component({ template: '' })
+class TestComponent {
+  newCustomerFormGroup = this.fb.group({
+    name: ['', [Validators.required]],
+    email: ['', [Validators.required, Validators.email]],
+  });
+
+  constructor(private fb: FormBuilder) {}
+}
+
+describe('Novo Cliente Form', () => {
+  let component: TestComponent;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule],
+      declarations: [TestComponent],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(TestComponent);
+    component = fixture.componentInstance;
+  });
+
+  it('Deve invalidar formulário se campos estiverem vazios', () => {
+    expect(component.newCustomerFormGroup.valid).toBeFalse();
+  });
+
+  it('Deve validar campos corretamente', () => {
+    component.newCustomerFormGroup.controls['name'].setValue('Cliente Teste');
+    component.newCustomerFormGroup.controls['email'].setValue('teste@cliente.com');
+    expect(component.newCustomerFormGroup.valid).toBeTrue();
+  });
+});
+Teste para "Buscar Conta":
+typescript
+Copiar
+Editar
+it('Deve exibir erro ao buscar conta inexistente', () => {
+  component.accountFormGroup.controls['accountId'].setValue('9999');
+  component.handleSearchAccount();
+  expect(component.errorMessage).toBe('Conta não encontrada');
+});
+5. Executar Testes
+Use os comandos do Angular CLI para rodar os testes:
+
+bash
+Copiar
+Editar
+ng test
+6. Ferramentas Complementares
+Cypress ou Protractor para testes end-to-end.
+Jenkins/GitHub Actions para integração contínua dos testes.
+Esse plano cobre cenários funcionais e validações tanto manual quanto automaticamente! 🚀
+
+
+Plano de Testes para o Backend
+O plano de testes cobre os endpoints implementados no backend, com foco em verificar a funcionalidade, comportamento em cenários esperados e tratamento de erros. A seguir, apresento um plano detalhado:
+
+1. Estrutura do Plano de Testes
+1.1. Objetivo
+Garantir que todos os endpoints funcionem conforme o esperado.
+Validar os cenários positivos e negativos.
+Testar o tratamento de erros e validação de dados.
+1.2. Escopo
+Endpoints do backend implementados no arquivo server.js:
+/customers
+/customers/search
+/customers/:id
+/accounts/:accountId/pageOperations
+/accounts/debit
+/accounts/credit
+/accounts/transfer
+1.3. Ferramentas de Teste
+Postman ou Insomnia: Para testes manuais.
+Jest ou Mocha com Supertest: Para testes automatizados.
+1.4. Tipos de Teste
+Testes funcionais.
+Testes de integração.
+Testes de validação.
+2. Casos de Teste
+**2.1. /customers (GET)
+Cenário Positivo:
+Solicitar a lista de clientes e verificar se todos os clientes são retornados.
+Cenário Negativo:
+Nenhum caso aplicável, pois não há entrada do usuário.
+**2.2. /customers/search (GET)
+Cenário Positivo:
+Buscar clientes por nome parcial (keyword=João) e verificar se retorna resultados corretos.
+Buscar clientes por e-mail parcial (keyword=@gmail.com) e verificar o retorno.
+Cenário Negativo:
+Buscar com keyword vazio ou não correspondente e verificar se retorna uma lista vazia.
+**2.3. /customers (POST)
+Cenário Positivo:
+Criar um novo cliente com dados válidos e verificar:
+O cliente é adicionado à lista.
+Um ID único é gerado automaticamente.
+Cenário Negativo:
+Enviar um corpo vazio e verificar se o sistema retorna erro.
+Enviar um JSON inválido e validar o tratamento.
+**2.4. /customers/:id (DELETE)
+Cenário Positivo:
+Deletar um cliente existente e verificar:
+O cliente não aparece mais na lista.
+O status retornado é 200.
+Cenário Negativo:
+Tentar deletar um cliente com id inexistente e verificar o retorno correto.
+**2.5. /accounts/:accountId/pageOperations (GET)
+Cenário Positivo:
+Obter as operações de uma conta com paginação válida (page=0, size=2).
+Verificar se os resultados correspondem à página e tamanho solicitados.
+Cenário Negativo:
+Solicitar uma página fora do alcance (ex.: page=10) e validar retorno vazio.
+Usar um accountId inexistente e validar o status 404.
+**2.6. /accounts/debit (POST)
+Cenário Positivo:
+Realizar débito em uma conta com saldo suficiente e verificar:
+O saldo é atualizado corretamente.
+Uma nova operação de débito é registrada.
+Cenário Negativo:
+Tentar debitar um valor maior que o saldo e validar o erro 400.
+Debitar de uma conta inexistente e verificar o status 404.
+**2.7. /accounts/credit (POST)
+Cenário Positivo:
+Realizar crédito em uma conta válida e verificar:
+O saldo é atualizado corretamente.
+Uma nova operação de crédito é registrada.
+Cenário Negativo:
+Creditar em uma conta inexistente e verificar o status 404.
+**2.8. /accounts/transfer (POST)
+Cenário Positivo:
+Transferir um valor entre duas contas válidas e verificar:
+O saldo da conta de origem é reduzido corretamente.
+O saldo da conta de destino é aumentado corretamente.
+Ambas as contas registram as operações de transferência.
+Cenário Negativo:
+Transferir de uma conta inexistente para outra e validar o status 404.
+Transferir um valor maior que o saldo da conta de origem e verificar o erro 400.
+Transferir entre contas inválidas (nenhuma delas existe) e validar o erro.
+3. Testes Automatizados (Exemplo com Jest e Supertest)
+Exemplo de teste para /customers:
+
+javascript
+Copiar
+Editar
+const request = require('supertest');
+const app = require('./server'); // Supondo que você exporte o app do server.js
+
+describe('API /customers', () => {
+  it('deve retornar todos os clientes', async () => {
+    const response = await request(app).get('/customers');
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBeGreaterThan(0);
+  });
+
+  it('deve criar um novo cliente', async () => {
+    const newCustomer = { name: 'Teste Cliente', email: 'teste@gmail.com' };
+    const response = await request(app).post('/customers').send(newCustomer);
+    expect(response.status).toBe(200);
+    expect(response.body.name).toBe('Teste Cliente');
+  });
+});
+4. Priorização dos Testes
+Alta Prioridade: /accounts/transfer, /accounts/debit, /accounts/credit.
+Média Prioridade: /customers, /customers/:id.
+Baixa Prioridade: /accounts/:accountId/pageOperations, /customers/search.
+5. Conclusão
+Este plano cobre cenários críticos e variações comuns para garantir que a API seja robusta.
+Podemos detalhar mais testes automatizados ou casos específicos conforme necessário. 🚀
+
+
+
+
+
+
+
+Você disse:
+ Testes Automatizados (Exemplo com Jest e Supertest) passo a passo para rodar esses testes
+O ChatGPT disse:
+ChatGPT
+Segue o passo a passo completo para configurar e executar testes automatizados para seu backend Node.js usando Jest e Supertest.
+
+1. Configurar o Ambiente de Testes
+1.1. Instalar Dependências
+No terminal, na raiz do projeto, execute os seguintes comandos para instalar Jest e Supertest:
+
+bash
+Copiar
+Editar
+npm install --save-dev jest supertest
+1.2. Atualizar o package.json
+Adicione o script para rodar os testes no seu package.json:
+
+json
+Copiar
+Editar
+"scripts": {
+  "test": "jest"
+}
+2. Preparar o Código para Testes
+2.1. Exportar o app no server.js
+Modifique seu server.js para exportar o aplicativo, sem iniciar diretamente o servidor:
+
+javascript
+Copiar
+Editar
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+const port = 8085;
+
+app.use(cors());
+app.use(express.json());
+
+// (Resto dos endpoints aqui)
+
+// Inicia o servidor somente se não estiver rodando em ambiente de teste
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(port, () => {
+        console.log(`Backend rodando na porta ${port}`);
+    });
+}
+
+module.exports = app; // Exporta o app para os testes
+3. Criar Arquivos de Teste
+3.1. Estrutura do Projeto
+Certifique-se de que a estrutura do projeto inclua uma pasta para testes. Por exemplo:
+
+go
+Copiar
+Editar
+project/
+├── node_modules/
+├── server.js
+├── package.json
+├── package-lock.json
+└── tests/
+    └── customers.test.js
+3.2. Exemplo de Teste Automatizado
+Crie um arquivo na pasta tests/ chamado customers.test.js:
+
+javascript
+Copiar
+Editar
+const request = require('supertest');
+const app = require('../server'); // Caminho para o server.js
+
+describe('Testando a API de clientes', () => {
+    it('Deve retornar todos os clientes', async () => {
+        const response = await request(app).get('/customers');
+        expect(response.status).toBe(200);
+        expect(response.body.length).toBeGreaterThan(0);
+    });
+
+    it('Deve criar um novo cliente', async () => {
+        const newCustomer = { name: 'Cliente Teste', email: 'teste@cliente.com' };
+        const response = await request(app).post('/customers').send(newCustomer);
+        expect(response.status).toBe(200);
+        expect(response.body.name).toBe('Cliente Teste');
+    });
+
+    it('Deve buscar clientes por palavra-chave', async () => {
+        const response = await request(app).get('/customers/search?keyword=João');
+        expect(response.status).toBe(200);
+        expect(response.body.length).toBeGreaterThan(0);
+        expect(response.body[0].name).toMatch(/João/);
+    });
+
+    it('Deve deletar um cliente existente', async () => {
+        const response = await request(app).delete('/customers/1'); // ID de exemplo
+        expect(response.status).toBe(200);
+    });
+
+    it('Deve retornar erro ao deletar cliente inexistente', async () => {
+        const response = await request(app).delete('/customers/9999'); // ID inexistente
+        expect(response.status).toBe(200); // Pode ajustar o status conforme implementado
+    });
+});
+4. Rodar os Testes
+4.1. Rodar Todos os Testes
+Execute o comando para rodar todos os testes definidos:
+
+bash
+Copiar
+Editar
+npm test
+4.2. Rodar um Teste Específico
+Para rodar um único arquivo de teste, use:
+
+bash
+Copiar
+Editar
+npx jest tests/customers.test.js
+4.3. Rodar em Modo Watch (opcional)
+Para monitorar alterações no código e reexecutar os testes automaticamente:
+
+bash
+Copiar
+Editar
+npx jest --watch
+5. Verificar Resultados
+Após executar, o Jest exibirá um resumo dos testes, com informações como:
+
+Testes aprovados ✅
+Testes falhos ❌
+Cobertura de código (se configurada).
+6. Configuração Opcional: Cobertura de Código
+Para visualizar a cobertura dos testes no projeto, use o comando:
+
+bash
+Copiar
+Editar
+npx jest --coverage
+Um relatório detalhado será gerado na pasta coverage/.
+
+7. Resolvendo Problemas
+Erro: Porta já em uso: Use o comando kill para liberar a porta:
+bash
+Copiar
+Editar
+kill $(lsof -t -i:8085)
+Testes falhando inesperadamente: Verifique o log do Jest e garanta que o servidor está configurado corretamente para os testes.
+Pronto!
+Você agora tem um ambiente configurado para rodar testes automatizados no seu backend Node.js com Jest e Supertest. 🚀
+
+
+
+
+
+
+

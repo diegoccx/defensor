@@ -1,0 +1,31 @@
+<div class="container">
+  <div class="card col-md-6 offset-3 mt-2">
+    <div class="card-header">Login</div>
+    <div class="card-body">
+      <form [formGroup]="loginFormGroup" (ngSubmit)="handleSaveCustomer()">
+        <div class="mb-3">
+          <label class="form-label">Usuário:</label>
+          <input type="text" formControlName="name" class="form-control">
+          <span class="text-danger"
+                *ngIf="loginFormGroup.controls['name'].touched
+                && loginFormGroup.controls['name'].errors
+                && loginFormGroup.controls['name'].errors!['required']">
+           Usuário é obrigatório
+          </span>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Senha:</label>
+          <input type="text" formControlName="email" class="form-control">
+          <span class="text-danger"
+                *ngIf="loginFormGroup.controls['email'].touched
+                && loginFormGroup.controls['email'].errors
+                && loginFormGroup.controls['email'].errors!['email']">
+            Senha é obrigatório
+          </span>
+        </div>
+        <button [disabled]="!loginFormGroup.valid" class="btn btn-info">Acessar</button>
+		
+      </form>
+    </div>
+  </div>
+</div>

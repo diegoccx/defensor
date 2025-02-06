@@ -1,0 +1,107 @@
+/* Definir a cor de fundo e borda do navbar */
+.navbar {
+  background-color: #2980b9; /* Azul para o fundo da barra */
+  border-bottom: 2px solid #34495e; /* Linha sutil embaixo */
+}
+
+/* Ajusta o estilo da marca (BANCO) */
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ecf0f1; /* Cor clara para contraste */
+  transition: color 0.3s ease;
+}
+
+.navbar-brand:hover {
+  color: #f39c12; /* Cor de destaque ao passar o mouse */
+}
+
+/* Estiliza os links de navegação */
+.navbar-nav .nav-link {
+  color: #bdc3c7; /* Cor padrão */
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 8px 15px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  background-color: #34495e; /* Cor de fundo ao passar o mouse */
+  color: #ecf0f1; /* Cor do texto ao passar o mouse */
+}
+
+/* Estilo para o botão de pesquisa */
+.form-control {
+  width: 250px;
+  border-radius: 20px;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #f39c12; /* Cor de destaque quando o campo de pesquisa estiver em foco */
+}
+
+.btn-outline-success {
+  background-color: #f39c12; /* Cor do botão */
+  color: white;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  padding: 6px 20px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-outline-success:hover {
+  background-color: #e67e22; /* Cor de fundo ao passar o mouse */
+  color: #ecf0f1; /* Cor do texto ao passar o mouse */
+}
+
+/* Adiciona estilo ao botão de toggle no menu em dispositivos móveis */
+.navbar-toggler-icon {
+  background-color: #f39c12;
+}
+
+/* Estiliza o dropdown */
+.nav-item.dropdown .dropdown-menu {
+  background-color: #34495e; /* Cor do fundo do menu dropdown */
+  border-radius: 5px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.nav-item.dropdown .dropdown-item {
+  color: #ecf0f1; /* Cor do texto dos itens no dropdown */
+  padding: 10px 20px;
+  font-size: 1rem;
+}
+
+.nav-item.dropdown .dropdown-item:hover {
+  background-color: #2c3e50; /* Cor de fundo ao passar o mouse */
+  color: #f39c12; /* Cor do texto ao passar o mouse */
+}
+
+/* Estilo da barra de pesquisa */
+.form {
+  display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+/* Responsividade - Navbar no mobile */
+@media (max-width: 768px) {
+  .navbar-nav {
+    text-align: center;
+  }
+
+  .navbar-nav .nav-item {
+    margin: 10px 0;
+  }
+
+  .form-control {
+    width: 180px;
+    margin-top: 10px;
+  }
+
+  .btn-outline-success {
+    margin-top: 10px;
+  }
+}

@@ -1,0 +1,5 @@
+
+Escapar as aspas duplas no comando: Você pode tentar colocar o comando entre aspas simples e garantir que as aspas dentro do corpo JSON sejam escapadas corretamente. Veja como fazer isso:
+
+curl -X POST http://localhost:8085/customers -H "Content-Type: application/json" -d "{\"name\": \"John Doe\", \"email\": \"john@example.com\"}"
+

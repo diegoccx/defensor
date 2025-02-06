@@ -1,0 +1,48 @@
+<div class="container">
+  <div class="card col-md-10 offset-1 mt-2">
+    <div class="card-header">
+      <h3>Lista de Processos</h3>
+    </div>
+    <div class="card-body">
+      <!-- Indicador de carregamento -->
+      <div *ngIf="isLoading" class="text-center">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Carregando...</span>
+        </div>
+      </div>
+
+      <!-- Tabela de processos -->
+      <table class="table" *ngIf="!isLoading">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Número do Processo</th>
+            <th>Data Abertura</th>
+            <th>Status</th>
+            <th>Descrição</th>
+            <th>Defensor</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let processo of processos">
+            <td>{{ processo.id }}</td>
+            <td>{{ processo.numero_processo }}</td>
+            <td>{{ processo.data_abertura | date }}</td>
+            <td>{{ processo.status }}</td>
+            <td>{{ processo.descricao }}</td>
+            <td>João Basilio</td> <!-- Adapte conforme o seu modelo de dados -->
+            <td>
+              <button (click)="deleteProcesso(processo.id)" class="btn btn-danger btn-sm">Excluir</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Mensagem caso não existam processos -->
+      <div *ngIf="!isLoading && processos.length === 0" class="text-center">
+        <p>Nenhum processo encontrado.</p>
+      </div>
+    </div>
+  </div>
+</div>
