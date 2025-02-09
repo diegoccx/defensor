@@ -11,6 +11,34 @@
         </div>
       </div>
 
+      <!-- Formulário para adicionar um novo processo -->
+      <div class="mb-3">
+        <h4>Adicionar Novo Processo</h4>
+        <form [formGroup]="processoFormGroup" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="numero_processo">Número do Processo</label>
+            <input id="numero_processo" formControlName="numero_processo" class="form-control" required />
+          </div>
+          <div class="form-group">
+            <label for="data_abertura">Data de Abertura</label>
+            <input id="data_abertura" formControlName="data_abertura" type="date" class="form-control" required />
+          </div>
+          <div class="form-group">
+            <label for="status">Status</label>
+            <input id="status" formControlName="status" class="form-control" required />
+          </div>
+          <div class="form-group">
+            <label for="descricao">Descrição</label>
+            <textarea id="descricao" formControlName="descricao" class="form-control" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="defensor_id">Defensor ID</label>
+            <input id="defensor_id" formControlName="defensor_id" class="form-control" required />
+          </div>
+          <button type="submit" class="btn btn-primary mt-2" [disabled]="processoFormGroup.invalid">Adicionar Processo</button>
+        </form>
+      </div>
+
       <!-- Tabela de processos -->
       <table class="table" *ngIf="!isLoading">
         <thead>
