@@ -22,12 +22,15 @@ export class ProcessoComponent implements OnInit {
 
   ngOnInit(): void {
     this.processoFormGroup = this.fb.group({
-      username: this.fb.control(null, [Validators.required, Validators.minLength(4)]),
-      password: this.fb.control(null, [Validators.required, Validators.email])
+      numero_processo: ['', Validators.required],
+      data_abertura: ['', Validators.required],
+      status: ['', Validators.required],
+      descricao: ['', Validators.required],
+      defensor_id: ['', Validators.required]
     });
 
     // Carregar a lista de processos quando o componente é inicializado
-   this.loadProcessos();
+    this.loadProcessos();
   }
 
   // Método para carregar os processos
@@ -36,7 +39,6 @@ export class ProcessoComponent implements OnInit {
     this.processoService.getProcessos().subscribe(
       (data) => {
         this.processos = data; // Armazena os processos recebidos
-		
         this.isLoading = false; // Finaliza o carregamento
       },
       (error) => {
@@ -56,5 +58,21 @@ export class ProcessoComponent implements OnInit {
         console.error('Erro ao excluir processo', error);
       }
     );
+  }
+
+  // Método para adicionar um novo processo
+  onSubmit(): void {
+    if (this.processoFormGroup.valid) {
+      const novoProcesso = this.processoFormGroup.value;
+      this.processoService.addProcesso(novoProcesso).subscribe(
+        () => {
+          this.loadProcessos(); // Recarrega a lista de processos após a adição
+          this.processoFormGroup.reset(); // Reseta o formulário
+        },
+        (error) => {
+          console.error('Erro ao adicionar processo', error);
+        }
+      );
+    }
   }
 }
