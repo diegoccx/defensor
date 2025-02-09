@@ -84,7 +84,7 @@ app.get('/processos/:id', (req, res) => {
   });
 });
 
-app.post('/processos', (req, res) => {
+app.post('/processo', (req, res) => {
   const { numero_processo, data_abertura, status, descricao, defensor_id } = req.body;
   const stmt = db.prepare('INSERT INTO processo (numero_processo, data_abertura, status, descricao, defensor_id) VALUES (?, ?, ?, ?, ?)');
   stmt.run(numero_processo, data_abertura, status, descricao, defensor_id, function(err) {

@@ -21,7 +21,7 @@ export class ProcessoService {
   }
 
   // Método para salvar um novo processo
-  public saveProcesso(processo: Processo): Observable<Processo> {
+  public addProcesso(processo: Processo): Observable<Processo> {
     return this.http.post<Processo>(`${environment.backendHost}/processo`, processo);
   }
 
